@@ -1,0 +1,16 @@
+{
+  "name": "codwagers",
+  "version": "1.0.0",
+  "description": "",
+  "main": "api.js",
+  "dependencies": {
+    "call-of-duty-api": "git+https://github.com/bmmidei/Node-CallOfDuty.git",
+    "log4js": "^6.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
