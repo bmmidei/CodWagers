@@ -9,6 +9,7 @@ placementPts.set(5, 15);
 placementPts.set(1, 30);
 
 const numGames = 7;
+const nBest = 5;
 
 const teamData = [
     {
@@ -20,17 +21,17 @@ const teamData = [
             },
             {
                 id: "Stewpot#6739127",
-                username: "XxStewpotxX"
+                username: "Stewpot"
             },
             {
-                id: "",
+                id: "ScaryBarry69#6048185",
                 username: "ScaryBarry69"
             }
 
         ],
         // Start and end times but be in milliseconds (i.e. epoch timestamp * 1000)
-        teamStartTime: 1589673777000,
-        teamEndTime: 1589686257000,
+        teamStartTime: 1590364800000,
+        teamEndTime: 1590379200000,
     },
 ];
 
@@ -39,6 +40,7 @@ module.exports = {
     ppk,
     placementPts,
     numGames,
+    nBest,
     teamData
 }
 

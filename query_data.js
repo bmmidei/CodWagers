@@ -28,8 +28,12 @@ async function batchQuery() {
             logger.info("Getting data for user " + username + " between " +
                         start.toUTCString() + " and " + end.toUTCString());
             API.MWcombatwz(userId, start.getTime(), end.getTime()).then(data => {
-                logger.info("Found " + data.matches.length + " matches for " + username);
-                writeDataToFile(data, username);
+                if (data) {
+                    logger.info("Found " + data.matches.length + " matches for " + username);
+                    writeDataToFile(data, username);
+                } else {
+                    logger.error("No matches found for " + username);
+                }
             }).catch(err => {
                 logger.error(err);
             });
