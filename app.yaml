@@ -1,0 +1,8 @@
+runtime: nodejs12
+includes:
+  - env_variables.yaml
+
+  # env_variables.yaml should be formatted as follows:
+  #
+  # env_variables:
+  #   SECRET: 'my_secret'

@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+// Environment variables for app engine deploy
+env_variables.yaml
+
