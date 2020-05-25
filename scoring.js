@@ -36,21 +36,27 @@ CONFIG.teamData.forEach(team => {
         logger.debug("Taking the first " + CONFIG.numGames + " games");
         if (matches.length < CONFIG.numGames) {
             logger.error("Not enough games found for " + playerInfo.username)
+            return;
         }
         matches = matches.slice(0, CONFIG.numGames);
 
         // Process n games and produce a score for the team
         // Later we will check that scores for all team members match
         // effectively giving us 3 players' data to confirm the scores
-        let totalScore = 0;
-        matches.forEach((match, idx) => {
+        const gameScores = matches.map((match, idx) => {
             matchSummary = createMatchSummary(match);
             const gameScore = scoreGame(matchSummary);
-            logger.debug("Score for game " + idx + ": " + gameScore);
+            logger.debug("Score for game " + (idx+1) + ": " + gameScore);
             logger.debug("Game ID: " + matchSummary.matchId);
-            totalScore += gameScore;
+            return gameScore;
         })
-        logger.info("Total score for team " + teamMembers + " : " + totalScore);
+
+        // Take n best games
+        logger.info("Game Scores: " + gameScores)
+        const topScores = gameScores.sort((a,b) => b-a).slice(0,CONFIG.nBest);
+        const arrSum = arr => arr.reduce((a,b) => a + b, 0)
+
+        logger.info("Total score for team " + teamMembers + " : " + arrSum(topScores));
     });
 })
 
