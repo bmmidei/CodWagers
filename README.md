@@ -7,6 +7,7 @@ env_variables:
   COD_API_EMAIL: <fill in>
   COD_API_PW: <fill in>
   DISCORD_BOT_TOKEN: <fill in>
+  TRIGGER_PHRASE: bot will only respond to this phrase. Used for testing.
 ```
 
 *Set up the gcloud sdk if you haven't already: https://cloud.google.com/sdk/install
