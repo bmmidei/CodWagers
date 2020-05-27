@@ -23,6 +23,7 @@ function shouldProcessMessage(msg) {
 }
 
 client.on('message', msg => {
+  console.log("Got message: " + msg.content);
   if (!shouldProcessMessage(msg)) {
     return;
   }
