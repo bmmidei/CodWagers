@@ -1,8 +1,15 @@
+const db = require('../db_accessor.js')
+
 const tournamentPrompts = [
   {
     id: 'name',
     label: 'Tournament Name',
     prompt: 'Enter the tournament name: ',
+  },
+  {
+    id: 'teamSize',
+    label: 'Size of each team',
+    prompt: 'Enter the number of players on each team: ',
   },
   {
     id: 'ppk',
@@ -18,7 +25,7 @@ const tournamentPrompts = [
 
 module.exports = {
   name: 'createtournament',
-  description: 'Create Tournament',
+  description: 'Command to create a tournament',
   async execute(message, args) {
     const initialPrompt = 'You are attempting to create a tournament. Please answer the following prompts.\n' +
                           'If at any time you would like to exit, send the message \"quit\". You can review the responses before submitting.';
@@ -56,11 +63,14 @@ module.exports = {
         message.channel.send(printTournamentDataForReview(responses))
           .then(() => {
             message.channel.awaitMessages(filter, { time: 60000, max: 1, errors: ['time'] })
-              .then(messages => {
+              .then(async messages => {
                 if (messages.first().content === 'y') {
                   message.channel.send('Confirmed. Creating tournament...');
 
-                  // write to database here
+                  // Write to database here
+                  const tournament = createTournamentObjectForDB(message, responses);
+                  const tournamentId = await db.createTournament(tournament);
+                  message.channel.send('Created tournament successfully!\n Tournament ID: ' + tournamentId);
                 }
                 else {
                   message.channel.send('Aborting...');
@@ -86,6 +96,12 @@ function printTournamentDataForReview(responses) {
   return response;
 }
 
-function createTournamentObjectForDB(responses) {
-  return;
+function createTournamentObjectForDB(message, responses) {
+  const tournament = {};
+  tournamentPrompts.forEach((elem, idx) => {
+    tournament[elem.id] = responses[idx];
+  })
+  tournament['admin'] = message.author.id;
+  tournament['teams'] = [];
+  return tournament;
 }
