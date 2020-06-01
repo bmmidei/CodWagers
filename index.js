@@ -34,12 +34,6 @@ client.on('message', message => {
   }
 });
 
-  /*
-    Add support for tournament commands here. Exact commands needed TBD (create
-    tournament, add team, add player to team, start scoring, get leaderboard,
-    etc.)
-  */
-
 client.on('ready', () => {
   console.log('Your bot is now connected');
 });
