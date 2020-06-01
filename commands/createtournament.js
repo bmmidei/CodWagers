@@ -101,6 +101,7 @@ function createTournamentObjectForDB(message, responses) {
   tournamentPrompts.forEach((elem, idx) => {
     tournament[elem.id] = responses[idx];
   })
+  tournament['createdAt'] = Date.now();
   tournament['admin'] = message.author.id;
   tournament['teams'] = [];
   return tournament;

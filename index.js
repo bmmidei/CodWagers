@@ -16,15 +16,15 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
 }
 
-function shouldProcessMessage(msg) {
+function shouldProcessMessage(message) {
   // Message was not prefixed with the correct trigger phrase.
-  if (!msg.content.startsWith(prefix)) {
+  if (!message.content.startsWith(prefix)) {
     console.log("Message did not contain prefix");
     return false;
   }
 
   // Message was authored by the bot.
-  if (msg.author.id === client.user.id) {
+  if (message.author.id === client.user.id) {
     console.log("Message is from bot");
     return false;
   }
@@ -32,27 +32,28 @@ function shouldProcessMessage(msg) {
   return true;
 }
 
-client.on('message', msg => {
-  console.log("Got message: " + msg.content);
-  if (!shouldProcessMessage(msg)) {
+client.on('message', message => {
+  console.log("Got message: " + message.content);
+  if (!shouldProcessMessage(message)) {
     return;
   }
 
-  const split = msg.content.slice(prefix.length).trim().split(/ +/g);
-  const command = split[0];
-  const args = split.slice(1);
+  const args = message.content.slice(prefix.length).trim().split(/ +/g);
+  const command = args.shift().toLowerCase();
 
   /*tournament.handleRequest(command, args, msg) */
-    if (!client.commands.has(command)) {
-      message.channel.send(`No command "${command}" exists`)
+  if (!client.commands.has(command)) {
+    message.channel.send(`No command "${command}" exists`)
+    return;
+  }
 
-    try {
-      client.commands.get(command).execute(message, args);
-    } catch (error) {
-      console.error(error);
-      message.reply('there was an error trying to execute that command!');
-    }
-  });
+  try {
+    client.commands.get(command).execute(message, args);
+  } catch (error) {
+    console.error(error);
+    message.reply('there was an error trying to execute that command!');
+  }
+});
 
 client.on('ready', () => {
   console.log('Your bot is now connected');
