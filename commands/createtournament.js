@@ -69,7 +69,7 @@ module.exports = {
 
                   // Write to database here
                   const tournament = createTournamentObjectForDB(message, responses);
-                  const tournamentId = await db.createTournament(tournament);
+                  const tournamentId = await db.createTournament(message.guild.id, tournament);
                   message.channel.send('Created tournament successfully!\n Tournament ID: ' + tournamentId);
                 }
                 else {
