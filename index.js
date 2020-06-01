@@ -1,4 +1,5 @@
 require('dotenv').config();
+var tournament = require('./tournament');
 
 const fs = require('fs');
 const prefix = process.env.TRIGGER_PHRASE;
@@ -15,24 +16,43 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
 }
 
-client.on('message', message => {
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
+function shouldProcessMessage(msg) {
+  // Message was not prefixed with the correct trigger phrase.
+  if (!msg.content.startsWith(prefix)) {
+    console.log("Message did not contain prefix");
+    return false;
+  }
 
-  const args = message.content.slice(prefix.length).trim().split(/ +/g);
-  const command = args.shift().toLowerCase();
+  // Message was authored by the bot.
+  if (msg.author.id === client.user.id) {
+    console.log("Message is from bot");
+    return false;
+  }
 
-  if (!client.commands.has(command)) {
-    message.channel.send(`No command "${command}" exists`)
+  return true;
+}
+
+client.on('message', msg => {
+  console.log("Got message: " + msg.content);
+  if (!shouldProcessMessage(msg)) {
     return;
   }
 
-  try {
-    client.commands.get(command).execute(message, args);
-  } catch (error) {
-    console.error(error);
-    message.reply('there was an error trying to execute that command!');
-  }
-});
+  const split = msg.content.slice(prefix.length).trim().split(/ +/g);
+  const command = split[0];
+  const args = split.slice(1);
+
+  /*tournament.handleRequest(command, args, msg) */
+    if (!client.commands.has(command)) {
+      message.channel.send(`No command "${command}" exists`)
+
+    try {
+      client.commands.get(command).execute(message, args);
+    } catch (error) {
+      console.error(error);
+      message.reply('there was an error trying to execute that command!');
+    }
+  });
 
 client.on('ready', () => {
   console.log('Your bot is now connected');
