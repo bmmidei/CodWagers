@@ -7,9 +7,10 @@
     "node": ">=12.0.0"
   },
   "dependencies": {
-    "call-of-duty-api": "git+https://github.com/bmmidei/Node-CallOfDuty.git",
+    "call-of-duty-api": "^1.2.0",
     "discord.js": "^12.2.0",
     "dotenv": "^8.2.0",
+    "firebase-admin": "^8.12.1",
     "log4js": "^6.3.0"
   },
   "devDependencies": {},

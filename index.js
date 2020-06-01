@@ -42,8 +42,7 @@ client.on('message', msg => {
   const command = split[0];
   const args = split.slice(1);
 
-  tournament.handleRequest(command, args, msg);
-  /* (commenting out temporarily)
+  /*tournament.handleRequest(command, args, msg) */
     if (!client.commands.has(command)) {
       message.channel.send(`No command "${command}" exists`)
 
@@ -53,14 +52,7 @@ client.on('message', msg => {
       console.error(error);
       message.reply('there was an error trying to execute that command!');
     }
-  });*/
-
-  /*
-    Add support for tournament commands here. Exact commands needed TBD (create
-    tournament, add team, add player to team, start scoring, get leaderboard,
-    etc.)
-  */
-})
+  });
 
 client.on('ready', () => {
   console.log('Your bot is now connected');
