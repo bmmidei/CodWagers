@@ -9,11 +9,22 @@ admin.initializeApp({
 let db = admin.firestore();
 
 
-async function getAllTeams(serverId) {
+async function getAllTeamsInServer(serverId) {
   const snapshot = await db.collection('servers').doc(serverId).collection('teams')
     .orderBy('teamName').get()
   return snapshot.docs.map(doc => doc.data());
 }
+
+async function getTeamsInTournament(serverId, tournamentId) {
+  const snapshot = await db.collection('servers')
+                           .doc(serverId)
+                           .collection('tournaments')
+                           .doc(tournamentId)
+                           .collection('teams')
+                          .orderBy('teamName').get()
+  return snapshot.docs.map(doc => doc.data());
+}
+
 
 async function createTeam(serverId, team) {
   const setDoc = await db.collection('servers')
@@ -40,12 +51,50 @@ async function getLatestTournament(serverId) {
   const query = await db.collection('servers').doc(serverId).collection('tournaments')
     .orderBy('createdAt', 'desc').limit(1).get()
   const snapshot = query.docs[0];
-  return snapshot.data();
+  const tournament = snapshot.data();
+  tournament['id'] = snapshot.id;
+  return tournament;
+}
+
+async function getTeamById(serverId, teamId) {
+  const query = await db.collection('servers').doc(serverId).collection('teams').doc(teamId);
+  const snapshot = query.get()
+    .then((docRef) => {
+      if (!docRef.exists) {
+        throw 'No team with this name exists!';
+      } else {
+        console.log('Document data:', docRef.data());
+        return docRef.data();
+      }
+    })
+    .catch(err => {
+      throw 'Error getting team - ' + err;
+    });
+    
+  return snapshot
+  //return snapshot.data();
+}
+
+async function addTeamToTournament(serverId, tournamentId, team) {
+  const setRef = await db.collection('servers')
+                         .doc(serverId)
+                         .collection('tournaments')
+                         .doc(tournamentId)
+                         .collection('teams')
+                         .add(team)
+                         .then(ref => {
+                           console.log('Added team to tournament with ID: ', ref.id);
+                           return ref.id;
+                         });
+  return setRef;
 }
 
 module.exports = {
   createTournament,
-  getAllTeams,
+  getTeamsInTournament,
+  getAllTeamsInServer,
   createTeam,
   getLatestTournament,
+  getTeamById,
+  addTeamToTournament,
 }
