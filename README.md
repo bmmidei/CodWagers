@@ -16,3 +16,12 @@ env_variables:
    `gcloud app deploy --project PROJECT_ID app.yaml`
 
 * You can view current instances if you've already deployed with `gcloud app instances list`
+
+# Deploying the cloud functions
+This repo has cloud functions in the `/functions' directory that are designed to run periodically
+to pull new data from the COD API into the firebase database.
+To deploy a new version of the functions: 
+```
+firebase deploy --only functions --project codwagers
+```
+
