@@ -19,13 +19,13 @@ for (const file of commandFiles) {
 function shouldProcessMessage(message) {
   // Message was not prefixed with the correct trigger phrase.
   if (!message.content.startsWith(prefix)) {
-    console.log("Message did not contain prefix");
+    //console.log("Message did not contain prefix");
     return false;
   }
 
   // Message was authored by the bot.
   if (message.author.id === client.user.id) {
-    console.log("Message is from bot");
+    //console.log("Message is from bot");
     return false;
   }
 

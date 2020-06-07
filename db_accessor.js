@@ -21,7 +21,7 @@ async function getTeamsInTournament(serverId, tournamentId) {
                            .collection('tournaments')
                            .doc(tournamentId)
                            .collection('teams')
-                          .orderBy('teamName').get()
+                           .orderBy('teamName').get()
   return snapshot.docs.map(doc => doc.data());
 }
 
@@ -32,6 +32,16 @@ async function createTeam(serverId, team) {
                          .collection('teams')
                          .doc(team.teamName) // Use team name as the DB custom id
                          .set(team)
+}
+
+async function addStartTimeForTeam(serverId, tournamentId, teamName) {
+  const setDoc = await db.collection('servers')
+                         .doc(serverId)
+                         .collection('tournaments')
+                         .doc(tournamentId)
+                         .collection('teams')
+                         .doc(teamName) // Use team name as the DB custom id
+                         .update({startTime: Date.now()})
 }
 
 
@@ -70,9 +80,29 @@ async function getTeamById(serverId, teamId) {
     .catch(err => {
       throw 'Error getting team - ' + err;
     });
-    
   return snapshot
-  //return snapshot.data();
+}
+
+async function getTeamInTournamentByTeamName(serverId, tournamentId, teamName) {
+  const query = await db.collection('servers')
+                        .doc(serverId)
+                        .collection('tournaments')
+                        .doc(tournamentId)
+                        .collection('teams')
+                        .doc(teamName);
+  const snapshot = query.get()
+    .then((docRef) => {
+      if (!docRef.exists) {
+        throw 'No team with this name exists!';
+      } else {
+        console.log('Document data:', docRef.data());
+        return docRef.data();
+      }
+    })
+    .catch(err => {
+      throw 'Error getting team - ' + err;
+    });
+  return snapshot
 }
 
 async function addTeamToTournament(serverId, tournamentId, team) {
@@ -81,12 +111,11 @@ async function addTeamToTournament(serverId, tournamentId, team) {
                          .collection('tournaments')
                          .doc(tournamentId)
                          .collection('teams')
-                         .add(team)
-                         .then(ref => {
-                           console.log('Added team to tournament with ID: ', ref.id);
-                           return ref.id;
+                         .doc(team.teamName) // Use team name as the DB custom id
+                         .set(team)
+                         .then(() => {
+                           console.log('Added team to tournament');
                          });
-  return setRef;
 }
 
 module.exports = {
