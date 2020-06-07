@@ -15,6 +15,14 @@ async function getAllTeamsInServer(serverId) {
   return snapshot.docs.map(doc => doc.data());
 }
 
+async function getAllMatchesInServer(serverId) {
+  const snapshot = await db.collection('servers')
+                           .doc(serverId)
+                           .collection('matches')
+                           .get()
+  return snapshot.docs.map(doc => doc.data());
+}
+
 async function getTeamsInTournament(serverId, tournamentId) {
   const snapshot = await db.collection('servers')
                            .doc(serverId)
@@ -126,4 +134,7 @@ module.exports = {
   getLatestTournament,
   getTeamById,
   addTeamToTournament,
+  getAllMatchesInServer,
+  addStartTimeForTeam,
+  getTeamInTournamentByTeamName,
 }

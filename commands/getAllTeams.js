@@ -1,4 +1,5 @@
 const db = require('../db_accessor.js')
+const embedUtils = require('../embedUtils.js');
 
 module.exports = {
   name: 'teams',
@@ -10,16 +11,14 @@ module.exports = {
 
     if (args[0] === 'server') {
       const teams = await db.getAllTeamsInServer(message.guild.id);
-      message.channel.send(formatTeamsForOutput(teams));
+      message.channel.send(embedUtils.generateTeamListInServerEmbed(teams));
       return;
     }
 
     if (args[0] === 'tournament') {
-
       const tournament = await db.getLatestTournament(message.guild.id);
       const teams = await db.getTeamsInTournament(message.guild.id, tournament.id);
-      console.log(teams);
-      message.channel.send(formatTeamsForOutput(teams));
+      message.channel.send(embedUtils.generateTeamListInTournamentEmbed(teams, tournament.name));
       return;
     }
   }
