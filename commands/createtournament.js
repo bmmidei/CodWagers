@@ -1,5 +1,40 @@
 const db = require('../db_accessor.js')
 
+// Hardcoding some rules. We should figure out a way for the user to input these data
+const placementPtValues = [
+  {place: 20, pts: 1},
+  {place: 15, pts: 3},
+  {place: 10, pts: 5},
+  {place: 5, pts: 10},
+  {place: 4, pts: 15},
+  {place: 3, pts: 20},
+  {place: 2, pts: 25},
+  {place: 1, pts: 35}
+];
+
+const rules = {
+  killPts: {
+    label: 'Points per Kill',
+    value: 2
+  },
+  damagePts: {
+    label: 'Points per 1000 damage',
+    value: 1
+  },
+  placementPts: {
+    label: 'Placement Points Breakdown',
+    value: placementPtValues
+  },
+  numGames: {
+    label: 'Total Number of Games',
+    value: 7
+  },
+  nBest: {
+    label: 'Number of games scored',
+    value: 5
+  },
+}
+
 const tournamentPrompts = [
   {
     id: 'name',
@@ -12,15 +47,15 @@ const tournamentPrompts = [
     prompt: 'Enter the number of players on each team: ',
   },
   {
-    id: 'ppk',
-    label: 'Points per kill',
-    prompt: 'Enter the desired points per kill: ',
+    id: 'numGames',
+    label: 'Number of games played',
+    prompt: 'Enter the number of total games each team will play: ',
   },
   {
-    id: 'ppd',
-    label: 'Points per 1000 damage',
-    prompt: 'Enter the desired points per 1000 damage dealt: ',
-  }
+    id: 'nBest',
+    label: 'Number of games scored',
+    prompt: 'Enter the number of games to be scored: ',
+  },
 ];
 
 module.exports = {
@@ -103,5 +138,6 @@ function createTournamentObjectForDB(message, responses) {
   })
   tournament['createdAt'] = Date.now();
   tournament['admin'] = message.author.id;
+  tournament['rules'] = rules;
   return tournament;
 }
