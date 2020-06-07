@@ -103,6 +103,5 @@ function createTournamentObjectForDB(message, responses) {
   })
   tournament['createdAt'] = Date.now();
   tournament['admin'] = message.author.id;
-  tournament['teams'] = [];
   return tournament;
 }
