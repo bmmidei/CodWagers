@@ -5,7 +5,7 @@ const embedUtils = require('../embedUtils.js');
 
 module.exports = {
   name: 'teamscore',
-  description: 'Command to get score summary for all teams',
+  description: 'Command to get score report for a single team',
   async execute(message, args) {
     if (args.length == 0) {
       const prefix = process.env.TRIGGER_PHRASE;
