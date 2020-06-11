@@ -1,5 +1,8 @@
 const Discord = require('discord.js');
 const AsciiTable = require('ascii-table')
+require('dotenv').config();
+
+const prefix = process.env.TRIGGER_PHRASE;
 
 
 function createTeamsTable(teams) {
@@ -70,11 +73,9 @@ function generateTeamSummaryEmbed(teamSummary) {
     .addFields({ name: 'Game Links', value: gameLinks })
     .setTimestamp()
   return embed;
-
-  }
+}
 
 function generateTournamentSummaryEmbed(tournament, teamSummaries) {
-
   const embed = new Discord.MessageEmbed()
     .setColor('#0099ff')
     .setTitle(tournament.name + ' Summary')
@@ -96,10 +97,57 @@ function createTournamentTable(teamSummaries) {
   return '```' + table.toString() + '```';
 }
 
+function generateHelpEmbed() {
+  const createTeam = 'Create a new team in the server. You must create a team before you add it to the active tournament' +
+                     `\n\`${prefix} createteam Team1\` will add "Team1" to the server`;
+ 
+  const addTeam = 'Add an existing team (already registered on the server) to the active tournament' +
+                  `\n\`${prefix} addteam Team1\` will add "Team1" to the active tournament`;
+
+  const teams = 'Get all teams in the server or in the active tournament' +
+                  `\n\`${prefix} teams server\` will get all teams in the server` +
+                  `\n\`${prefix} teams tournament\` will get all teams in the active tournament`;
+
+  const summary = 'Get a summary of the active tournament' +
+                  `\n\`${prefix} summary\` will produce a tournament summary`;
+
+  const teamScore = 'Get a score report for a single team for the active tournament' +
+                    `\n\`${prefix} teamscore Team1\` will produce a score report for Team1`;
+
+  const start = 'Signal to the scoring system that you would like to start the game session for a team' +
+                    `\n\`${prefix} start Team1\` will start the game session for Team1. Games following this time will be scored`;
+
+  const ping = 'A simple command to test if the discord bot is responding to requests' +
+               `\n\`${prefix} ping\``;
+
+                  
+  
+  const embed = new Discord.MessageEmbed()
+    .setColor('#0099ff')
+    .setTitle('Help Documentation')
+    .addFields(
+      { name: 'Create Team', value: createTeam},
+      { name: '\u200B', value: '\u200B' },
+      { name: 'Add Team', value: addTeam},
+      { name: '\u200B', value: '\u200B' },
+      { name: 'List Teams', value: teams},
+      { name: '\u200B', value: '\u200B' },
+      { name: 'Start', value: start},
+      { name: '\u200B', value: '\u200B' },
+      { name: 'Summary', value: summary},
+      { name: '\u200B', value: '\u200B' },
+      { name: 'Team Score', value: teamScore},
+      { name: '\u200B', value: '\u200B' },
+      { name: 'Ping', value: ping})
+    .setTimestamp()
+  return embed;
+ 
+}
 
 module.exports = {
   generateTournamentSummaryEmbed,
   generateTeamSummaryEmbed,
   generateTeamListInServerEmbed,
   generateTeamListInTournamentEmbed,
+  generateHelpEmbed,
 }
