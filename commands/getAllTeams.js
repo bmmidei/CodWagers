@@ -23,20 +23,3 @@ module.exports = {
     }
   }
 }
-
-function formatTeamsForOutput(teams) {
-  // TODO formatting needs work. Look into discord embed objects
-  // TODO bring this into a util function. It'll get used in a few places
-  let out = ''
-  teams.forEach(team => {
-    out += 'Team Name: ' + team.teamName;
-    out += '\n\nPlayers:'
-    team.players.forEach((elem, idx) => {
-      if (idx != 0) {out += '\n';};
-      out += '\n\tActivisionID: ' + elem.activisionId;
-      out += '\n\tGamertag: ' + elem.gamertag;
-    })
-    out += '\n';
-  })
-  return out;
-}

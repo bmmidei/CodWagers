@@ -120,24 +120,16 @@ function generateHelpEmbed() {
   const ping = 'A simple command to test if the discord bot is responding to requests' +
                `\n\`${prefix} ping\``;
 
-                  
-  
   const embed = new Discord.MessageEmbed()
     .setColor('#0099ff')
     .setTitle('Help Documentation')
     .addFields(
       { name: 'Create Team', value: createTeam},
-      { name: '\u200B', value: '\u200B' },
       { name: 'Add Team', value: addTeam},
-      { name: '\u200B', value: '\u200B' },
       { name: 'List Teams', value: teams},
-      { name: '\u200B', value: '\u200B' },
       { name: 'Start', value: start},
-      { name: '\u200B', value: '\u200B' },
       { name: 'Summary', value: summary},
-      { name: '\u200B', value: '\u200B' },
       { name: 'Team Score', value: teamScore},
-      { name: '\u200B', value: '\u200B' },
       { name: 'Ping', value: ping})
     .setTimestamp()
   return embed;
