@@ -24,7 +24,6 @@ module.exports = {
       })
 
     const teamSummary = await scoringUtils.getScoreSummaryForTeam(message.guild.id, tournament, team);
-    console.log(teamSummary);
 
     const teamSummaryEmbed = embedUtils.generateTeamSummaryEmbed(teamSummary);
     message.channel.send(teamSummaryEmbed);

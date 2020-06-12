@@ -63,9 +63,15 @@ function createTeamSummaryTable(teamSummary) {
 }
 
 function generateTeamSummaryEmbed(teamSummary) {
-  const gameLinks = teamSummary.gameSummaries.map((gameSummary, idx) => {
+
+  if (teamSummary.gameSummaries.length === 0) {
+    return 'No games played';
+  }
+
+  const gameLinks= teamSummary.gameSummaries.map((gameSummary, idx) => {
     return `[Game ${idx+1}](${gameSummary.matchUrl})`;
   }).join(' ');
+
   const embed = new Discord.MessageEmbed()
     .setColor('#0099ff')
     .setTitle('Team ' + teamSummary.teamName+ ' Scores')

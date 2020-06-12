@@ -9,7 +9,6 @@ module.exports = {
   async execute(message, args) {
     const tournament = await db.getLatestTournament(message.guild.id);
     const teams = await db.getTeamsInTournament(message.guild.id, tournament.id);
-    console.log(teams);
 
     const scorePromises = teams.map((team) =>{
       // Returns a promise for each serverId

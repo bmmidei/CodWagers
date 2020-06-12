@@ -1,13 +1,14 @@
 const admin = require('firebase-admin');
 
+/* REQUIRED ONLY FOR LOCAL DEVELOPMENT
 let serviceAccount = require('./db_serviceAccountKey.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
-
+*/
+admin.initializeApp();   // Use for deployment
 let db = admin.firestore();
-
 
 async function getAllTeamsInServer(serverId) {
   const snapshot = await db.collection('servers').doc(serverId).collection('teams')
@@ -81,7 +82,6 @@ async function getTeamById(serverId, teamId) {
       if (!docRef.exists) {
         throw 'No team with this name exists!';
       } else {
-        console.log('Document data:', docRef.data());
         return docRef.data();
       }
     })
@@ -103,7 +103,6 @@ async function getTeamInTournamentByTeamName(serverId, tournamentId, teamName) {
       if (!docRef.exists) {
         throw 'No team with this name exists!';
       } else {
-        console.log('Document data:', docRef.data());
         return docRef.data();
       }
     })

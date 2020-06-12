@@ -15,9 +15,7 @@ async function getScoreSummaryForTeam(serverId, tournament, team) {
 
     let matches = await db.getAllMatchesInServer(serverId);
     matches = matches.filter((match) => {
-      //return new Date(match.utcStartSeconds * 1000) >= team.startTime;
-      return new Date(match.utcStartSeconds * 1000) >= new Date(1591403447000);
-      // return new Date(* 1000) >= team.startTime;
+      return new Date(match.utcStartSeconds * 1000) >= team.startTime;
     });
 
     const teamGamertags = team.players.map(player => player.gamertag);
@@ -29,7 +27,14 @@ async function getScoreSummaryForTeam(serverId, tournament, team) {
     // Take the first n games where n is parameter
     matches = matches.slice(0, tournament.rules.numGames.value);
 
-    // Filter matches in some "ignore" list
+    // TODO: Filter matches in some "ignore" list
+
+    if (matches.length === 0) {
+      return resolve({gameSummaries: [],
+                      teamName: team.teamName,
+                      gamesPlayed: 0,
+                      score: 0.0});
+    }
 
     gameSummaries = matches.map(match => generateGameSummary(match, tournament.rules));
     teamSummary = {}
@@ -45,14 +50,14 @@ function generateTotalScore(gameSummaries, nBest) {
   const sumReducer = (accumulator, currentValue) => accumulator + currentValue;
   const gameScores = gameSummaries.map(gameSummary => generateGameScore(gameSummary));
   const topScores = gameScores.sort((a,b) => b-a).slice(0, nBest);
-  return topScores.reduce(sumReducer);
+  return topScores.reduce(sumReducer, 0);
 }
 
 function generateGameScore(gameSummary) {
   const sumReducer = (accumulator, currentValue) => accumulator + currentValue;
   return gameSummary.scoreSummary.map(score => {
     return score.awardedPts
-  }).reduce(sumReducer);
+  }).reduce(sumReducer, 0);
 }
 
 
@@ -65,7 +70,7 @@ function generateGameSummary(match, rules) {
   gameSummary['scoreSummary'].push(generatePlacementSummary(matchTeamData, rules.placementPts));
   gameSummary['scoreSummary'].push(generateKillSummary(matchTeamData, rules.killPts));
   gameSummary['scoreSummary'].push(generateDamageSummary(matchTeamData, rules.damagePts));
-  gameSummary['score'] = gameSummary.scoreSummary.map(score => score.awardedPts).reduce((a, b) => a + b);
+  gameSummary['score'] = gameSummary.scoreSummary.map(score => score.awardedPts).reduce((a, b) => a + b, 0);
 
   return gameSummary;
 }
@@ -85,7 +90,7 @@ function generateKillSummary(matchTeamData, killPts) {
   const matchTotalKills = matchTeamData.players.map(player => {
     const kills = player.playerStats.kills;
     return kills;
-  }).reduce(sumReducer);
+  }).reduce(sumReducer, 0);
   const awardedPts = killPts.value * matchTotalKills;
   return {label: 'Kills', value: matchTotalKills, awardedPts};
 }
@@ -95,7 +100,7 @@ function generateDamageSummary(matchTeamData, damagePts) {
   const matchTotalDamage = matchTeamData.players.map(player => {
     const damage = player.playerStats.damageDone;
     return damage;
-  }).reduce(sumReducer);
+  }).reduce(sumReducer, 0);
   const awardedPts = damagePts.value * matchTotalDamage / 1000;
   return {label: 'Damage', value: matchTotalDamage, awardedPts};
 }
