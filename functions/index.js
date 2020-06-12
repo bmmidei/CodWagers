@@ -8,10 +8,41 @@ const API = require('call-of-duty-api')({ platform: 'uno' });
 exports.populateDbWithNewTournamentGames = functions.pubsub.schedule('*/20 * * * *')
   .timeZone('America/New_York')
   .onRun(async context => {
-    console.log('This will be run every 20 minutes');
+    console.log('Populate tournament games to be run every 20 minutes');
     const value = await addGamesToFirestore();
-    console.log('Finished Running!');
+    console.log('Finished populating games!');
   });
+
+exports.cleanOldDbGames = functions.pubsub.schedule('0 0 * * *')
+  .timeZone('America/New_York')
+  .onRun(async context => {
+    console.log('Clearing database games older than a week');
+    const value = await cleanFirestoreGames();
+    console.log('Finished cleaning games from DB!');
+  });
+
+function cleanFirestoreGames() {
+  return new Promise(async (resolve, reject) => {
+    // Run this function for all servers in the database
+    const serverSnapshot = await firestore.collection('servers').get()
+    const serverIds = serverSnapshot.docs.map(doc => doc.id);
+    console.log('Found Server IDs: ' + serverIds);
+
+    const serverActions = serverIds.map((serverId) =>{
+      // Returns a promise for each serverId
+      return removeGamesForServer(serverId);
+    });
+
+    // We now have a promises array and we want to wait for it
+    const results = Promise.all(serverActions);
+
+    results.then(() => {
+      resolve('Success removing games for all servers');
+    }).catch((err) => {
+      reject('Error removing games for all servers\n' + err);
+    })
+  })
+}
 
 function addGamesToFirestore() {
   return new Promise(async (resolve, reject) => {
@@ -33,6 +64,25 @@ function addGamesToFirestore() {
     }).catch((err) => {
       reject('Error adding games for all servers\n' + err);
     })
+  })
+}
+
+function removeGamesForServer(serverId) {
+  return new Promise(async (resolve, reject) => {
+    // Remove all games older than one week
+    let lastWeek = new Date()
+    lastWeek.setDate(lastWeek.getDate() - 7);
+
+    let query = firestore.collection('servers')
+                         .doc(serverId)
+                         .collection('matches')
+                         .where('utcStartSeconds', '<', lastWeek.getTime()/1000);
+    query.get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        doc.ref.delete();
+      });
+    });
+    resolve('Success writing for all teams in server: ' + serverId);
   })
 }
 
